@@ -1,0 +1,184 @@
+Below is a MATLAB code for the stability plot and the values in the table.
+
+STABILITY PLOT (5-29)
+
+% STABILITY REGION (SANIA AND FADUGBA) 
+close all; clc; clear all;
+% Specify x range and number of points
+ x0 = -3.5;  x1 = 1.0;  Nx = 501;
+ % Specify y range and number of points
+ y0 = -3.5;  y1 = 3.5;  Ny = 501;
+ % Construction of the Mesh
+ xv = linspace(x0,x1,Nx);
+ yv = linspace(y0,y1,Ny);
+ [x,y] = meshgrid(xv,yv);
+ % Calculate z
+ z = x + 1i*y;
+ % Stability Polynomial
+g=1+z+z.^2/2+z.^3/6;
+ % Calculate magnitude of g
+ gmag = abs(g);
+ % Plot contours of gmag
+ contour(x,y,gmag,[1 1],'b-');
+ hold on; 
+ fill(x(gmag<=1 & gmag >= 0),y(gmag<=1 & gmag >= 0),'g');
+ axis([x0,x1,y0,y1]);
+ axis('square');
+ xlabel('Real (z)');
+ ylabel('Imag (z)');
+%?The End?
+
+VALUES IN THE COMPARISON OF PNM WITH FIM and ES TABLES (From 33-184)
+
+% IVP
+clc;
+clear all;
+close all;
+
+% ENTER INITIAL VALUES WITH X FINAL AND STEP LENGTH
+H = input('ENTER THE STEPWISE LENGTH, H = ');
+X0 = input('ENTER THE INITIAL VALUE OF X, X0 = ');
+Y0 = input('ENTER THE INITIAL VALUE OF Y, Y0 = ');
+XF = input('ENTER THE FINAL VALUE OF X, XF = ');
+
+% FIND VALUES N, XN, YN, YXN AND AERROR
+N=(XF-X0)/H;
+YN=Y0;
+XN=X0;
+
+%a1 = 7/25;
+%a2 = 7/2000000;
+%r= 0.8;
+   %r= 0.05;
+  % k= 10000;
+%k= 0.001;
+
+%YXN = (571*a1*exp(a1*X0))/(a1 + 571*a2*(exp(a1*X0)-1));
+ %AERROR=abs((571*a1*exp(a1*X0))/(a1 + 571*a2*(exp(a1*X0)-1))-Y0);
+ % YXN = (1000*exp(r*X0));
+ % AERROR=abs((1000*exp(r*X0))-Y0);
+  % YXN =(k*exp(r*X0))/(9+exp(r*X0));
+  % AERROR=abs((k*exp(r*X0))/(9+exp(r*X0))-Y0);
+  %YXN =(10/(1+10*k*X0));
+  %AERROR=abs((10/(1+10*k*X0))-Y0);
+ % YXN =(500*exp(-0.0693*X0));
+ % AERROR=abs((500*exp(-0.0693*X0))-Y0);
+% YXN =(80)/(1 + (19*exp(-5*X0)));
+% AERROR=abs((80)/(1 + (19*exp(-5*X0)))-Y0);
+ %YXN = (100*exp(r*X0));
+ %AERROR=abs((100*exp(r*X0))-Y0);
+%YXN =(0.4*exp(X0))/(1 + (0.4*(exp(X0)-1)));
+%AERROR=abs((0.4*exp(X0))/(1 + (0.4*(exp(X0)-1)))-Y0);
+for i=0:N
+ 
+% Define the differential equation: y' = f(x,y)
+%YN1 = r*YN;
+
+ % YN1 = r*YN*(1-(YN/k));
+ % YN11 = r*(YN1-2*(YN*YN1)/k);
+ % YN111 = r*(YN11-2*(YN1*YN1 + YN*YN1)/k);
+    
+  YN1 = -k*YN*YN;
+  YN11 = -2*k*YN*YN1;
+  YN111 = -2*k*(YN1*YN1+YN*YN11);
+
+  % YN1 = -0.0693*YN;
+  % YN11 = -0.0693*YN1;
+  % YN111 = -0.0693*YN11;
+
+ % YN1 = 5*YN*(1-0.0125*YN);
+ % YN11 = YN1*(5-0.125*YN);
+ % YN111 = YN11*(5-0.125*YN) - 0.125*YN1*YN1;
+
+     % YN1 = r*YN;
+     % YN11 = r*YN1;
+     % YN111 = r*YN11;
+  %YN1111 = r*YN111;
+
+
+     % YN1 = a1*YN - a2*YN*YN;
+     % YN11 = a1*YN1 - 2*a2*YN*YN1;
+     % YN111 = a1*YN11 - 2*a2*(YN1*YN1 + YN*YN11);
+
+ %YN1 = YN - YN*YN;% function
+ %YN11 = YN1-2*(YN*YN1);%first derivative of function
+ %YN111 = YN11-2*(YN*YN11+YN1*YN1);%second derivative of function
+ %YN1111 = YN111-2*(YN*YN111+3*YN1*YN11);%third derivative of function
+ %YN11111 = YN1111-2*(YN*YN1111+4*YN1*YN111+3*YN11*YN11);%fourth derivative of function
+ %YN111111 = YN11111-2*(YN*YN11111+5*YN1*YN1111+10*YN11*YN111);%fifth derivative of function
+ B{i+1}=YN;
+ C{i+1}=XN;
+ D{i+1}=YXN;
+ E{i+1}=AERROR;
+
+ % Implement the RK3 method
+%for i = 1:N
+      % k1 = YN1;
+      % k2 = r*(YN+k1*H/2);
+      % k3 = r*(YN-k1*H+2*k2*H);
+    %y(i+1) = y(i) + (k1+4*k2+k3)/6;
+    %x(i+1) = x(i) + h;
+%end
+
+% Implement my method
+   D1 = H*YN1;
+   D2 = (0.5*H*H)*YN11;
+   D3 = ((1/6)*H*H*H)*YN111;
+
+ % Implement Fadugba method
+ % G1= H*YN1;
+ % G2 = H*YN11; 
+ % G3 = (exp(-H)-1)*YN11;
+
+%Other method
+  % G1= H*YN1;
+  % G2 = (0.5*H*H)*(YN11 - YN1111);
+  % G3 = H*H*H*(YN111+YN1111)/6;
+  %G4=(H+exp(-H)-1)*YN1111;
+
+%Another Fadugba-Idowu method
+% G1= H*YN1;
+% G2 = (0.5*H*H)*(YN11 + YN111);
+% G3 = (1-exp(-H)-H)*YN111;
+
+ %G2=(0.5*H*H)*YN11;
+ %G3=((1/6)*H*H*H)*YN111;
+ %G4=((1/24)*H*H*H*H)*YN1111;
+ %G5=((1/120)*H*H*H*H*H)*YN11111;
+ %G6= ((1/720)*H*H*H*H*H*H)*YN111111;
+
+  %YNN = YN + H*(k1+4*k2+k3)/6;
+
+YNN = YN + D1 + D2 + D3;
+
+ %YNN=YN+G1+G2+G3;
+
+ %YNN=YN+G1+G2+G3+G4;
+ %YNN=YN+G1+G2+G3+G4+G5+G6;
+
+ XNN=(i+1)*H;
+
+ %YXNN= (k*exp(r*XNN))/(9+exp(r*XNN));
+ YXNN= (10/(1+10*k*XNN));
+ %YXNN = (500*exp(-0.0693*XNN));
+ %YXNN = (80)/(1 + (19*exp(-5*XNN)));
+ %YXNN = (100*exp(r*XNN));
+ %YXNN = (1000*exp(r*XNN));
+ %YXNN = (571*a1*exp(a1*XNN))/(a1 + 571*a2*(exp(a1*XNN)-1));
+ %YXNN = (0.4*exp(XNN))/(1 + (0.4*(exp(XNN)-1)));
+ YN=YNN;
+ XN=XNN;
+ YXN=YXNN;
+ AERROR=abs(YXN-YNN);
+ 
+end
+b={'N', 'XN', 'YN', 'YXN', 'EN'};
+disp(b);
+for i=0:N
+ 
+    c = {i, C{i+1}, B{i+1}, D{i+1}, E{i+1}};
+    %disp(c);
+    fprintf('%2.2f  %3.12f  %3.12f %3.12f %2.12f  \n',i,C{i+1},B{i+1},D{i+1},E{i+1});
+       
+end
+disp('-----------------------------------------------------------------------');
